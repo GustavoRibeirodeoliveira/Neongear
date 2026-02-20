@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produto • NeonGear</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="controle.ico" type="image/x-icon">
+  <style>
+    h3{
+      font-size: 30px;
+      padding-bottom: 15px;
+      padding-left: 36px;
+      padding-top: 15px;
+      font-style: italic;
+    }
+    h4{
+      font-size: 34px;
+      padding-left: 40px;
+      padding-top: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🎮 <span>NeonGear</span></div>
+  </header> 
+  
+  <div class="back-container">
+    <a href="index.html" class="btn back">← Voltar</a> 
+  </div>
+  <br>
+  
+  <main class="product-detail">
+    <div class="product-image">
+      <img id="mainImage" class="main-image" alt="Imagem do produto">
+      <div class="image-gallery"></div>
+    </div>
+    
+    <div class="product-info">
+      <h1 id="productName"></h1>
+    
+      <div class="rating">
+        ⭐⭐⭐⭐⭐ <span>(80)</span>
+      </div>
+    
+      <p id="productPrice" class="price"></p>
+      <p id="productStock" class="stock"></p>
+    
+      <button id="addToCart" class="btn primary">
+        Adicionar ao carrinho
+      </button>
+    
+      <h3>Sobre o produto:</h3>
+      <p id="productDesc"></p>
+    
+      <h4>Especificações:</h4>
+      <ul id="productSpecs"></ul>
+    </div>
+  </main>
+  
+  <script src="cart.js"></script>
+  <script src="produto.js"></script>
+</body>
+</html>

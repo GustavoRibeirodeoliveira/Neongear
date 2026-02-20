@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="controle.ico" type="image/x-icon">
+    <style>
+        .cart-page {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .cart-items {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #16213e;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            padding: 0;
+        }
+
+        .cart-item-price {
+            color: #00d9ff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            background: #00d9ff;
+            color: #0f0f23;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            background: #00b8d4;
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: #ee5a6f;
+        }
+
+        .cart-summary {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: right;
+        }
+
+        .cart-total {
+            font-size: 28px;
+            color: #00d9ff;
+            margin: 20px 0;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🎮 <span>NeonGear</span></div>
+    </header>
+
+    <div class="back-container">
+        <a href="index.html" class="btn back">← Continuar comprando</a>
+    </div>
+
+    <main class="cart-page">
+        <h1 style="margin-bottom: 30px;">🛒 Meu Carrinho</h1>
+
+        <div id="cartContent"></div>
+    </main>
+
+    <script src="cart.js"></script>
+    <script>
+        function renderCart() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartContent = document.getElementById("cartContent");
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="cart-empty">
+                        <h2>Seu carrinho está vazio 😢</h2>
+                        <p>  Adicione produtos incríveis para começar!</p><br><br><br>
+                        <a href="index.html" class="btn secundary">Ver produtos</a> <br>
+                    </div>
+                `;
+                return;
+            }
+
+            const itemsHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <p class="cart-item-price">R$ ${item.price.toFixed(2)}</p>
+                    </div>
+                    <div class="cart-item-qty">
+                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                        <span style="font-size: 18px; min-width: 30px; text-align: center;">${item.qty}</span>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(${item.id})">🗑 Remover</button>
+                </div>
+            `).join("");
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            cartContent.innerHTML = `
+                <div class="cart-items">
+                    ${itemsHTML}
+                </div>
+                <div class="cart-summary">
+                    <h2>Resumo do Pedido</h2>
+                    <p class="cart-total">Total: R$ ${total.toFixed(2)}</p>
+                    <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+                </div>
+            `;
+        }
+
+        function updateQty(id, change) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const item = cart.find(p => p.id === id);
+
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    cart = cart.filter(p => p.id !== id);
+                }
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+            updateCartCount(); // Atualiza o contador
+        }
+
+        function removeItem(id) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart = cart.filter(p => p.id !== id);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+            updateCartCount(); // Atualiza o contador
+        }
+
+        function checkout() {
+            alert("🎉 Compra finalizada com sucesso!\n\nObrigado por comprar na NeonGear!");
+            localStorage.removeItem("cart");
+            window.location.href = "index.html";
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>
